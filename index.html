@@ -1,42 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Phillies Tracker</title>
+    <title>Phillies Ticket Tracker</title>
     <style>
-        body { font-family: -apple-system, sans-serif; padding: 20px; background: #f0f2f5; }
-        .container { max-width: 800px; margin: auto; }
-        .game-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: grid; grid-template-columns: 100px 1fr 150px; align-items: center; }
-        .date { font-weight: bold; color: #E81828; border-right: 2px solid #ddd; }
-        .opponent { padding-left: 15px; font-size: 1.1em; font-weight: 600; }
-        .price { text-align: right; font-weight: bold; }
-        button { background: #E81828; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; float: right; }
+        body { font-family: -apple-system, sans-serif; padding: 20px; background: #f4f4f4; }
+        .card { background: white; padding: 20px; border-radius: 12px; max-width: 800px; margin: auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .game-row { display: grid; grid-template-columns: 100px 1fr 200px; padding: 15px 0; border-bottom: 1px solid #eee; align-items: center; }
+        .price-grid { font-size: 0.85em; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        .red-btn { background: #E81828; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; float: right; font-weight: bold; }
+        .date { color: #E81828; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚾ Phillies Dashboard <button onclick="loadData()">Refresh UI</button></h1>
-        <p id="status">Syncing with M3...</p>
-        <div id="game-list"></div>
+    <div class="card">
+        <h1>⚾ Phillies Schedule & Prices <button class="red-btn" onclick="location.reload()">Manual UI Refresh</button></h1>
+        <div id="game-list">Loading schedule...</div>
     </div>
     <script>
-        function loadData() {
-            document.getElementById('status').innerText = "Fetching latest JSON...";
-            fetch('games.json?t=' + Date.now())
-                .then(r => r.json())
-                .then(data => {
-                    const list = document.getElementById('game-list');
-                    list.innerHTML = '';
-                    data.forEach(g => {
-                        list.innerHTML += `<div class="game-card">
+        fetch('games.json?t=' + Date.now())
+            .then(r => r.json())
+            .then(data => {
+                const list = document.getElementById('game-list');
+                list.innerHTML = '';
+                data.forEach(g => {
+                    list.innerHTML += `
+                        <div class="game-row">
                             <div class="date">${g.weekday}<br>${g.date}</div>
-                            <div class="opponent">vs. ${g.opponent}</div>
-                            <div class="price">Sec 122: $${g.p122 || '??'}</div>
+                            <div><strong>vs ${g.opponent}</strong><br><small>${g.time}</small></div>
+                            <div class="price-grid">
+                                <span>Sec 122: <b>$${g.p122 || '--'}</b></span>
+                                <span>Sec 125: <b>$${g.p125 || '--'}</b></span>
+                            </div>
                         </div>`;
-                    });
-                    document.getElementById('status').innerText = "Updated via GitHub Pages";
                 });
-        }
-        loadData();
+            });
     </script>
 </body>
 </html>
