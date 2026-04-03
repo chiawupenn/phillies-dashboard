@@ -1,1 +1,6 @@
-[]
+[
+  {"date": "Apr 10", "weekday": "FRI", "time": "6:40 PM", "opponent": "Arizona Diamondbacks", "p122": 0},
+  {"date": "Apr 11", "weekday": "SAT", "time": "1:05 PM", "opponent": "Arizona Diamondbacks", "p122": 0},
+  {"date": "Apr 12", "weekday": "SUN", "time": "1:35 PM", "opponent": "Arizona Diamondbacks", "p122": 0},
+  {"date": "Apr 13", "weekday": "MON", "time": "6:40 PM", "opponent": "Chicago Cubs", "p122": 0}
+]

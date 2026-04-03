@@ -1,55 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Phillies Schedule & Prices</title>
+    <title>Phillies Tracker</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; padding: 20px; background: #f0f2f5; color: #1c1e21; }
-        .container { max-width: 900px; margin: auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .game-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: grid; grid-template-columns: 1fr 1fr 1.5fr 1fr; align-items: center; }
-        .date-box { font-weight: bold; border-right: 2px solid #E81828; padding-right: 10px; }
-        .opponent { font-size: 1.1em; font-weight: 600; padding-left: 15px; }
-        .prices { font-size: 0.9em; color: #555; }
-        .price-tag { color: #E81828; font-weight: bold; }
-        button { background: #E81828; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .meta { color: #888; font-size: 0.8em; }
+        body { font-family: -apple-system, sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 800px; margin: auto; }
+        .game-card { background: white; border-radius: 12px; padding: 15px; margin-bottom: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: grid; grid-template-columns: 100px 1fr 150px; align-items: center; }
+        .date { font-weight: bold; color: #E81828; border-right: 2px solid #ddd; }
+        .opponent { padding-left: 15px; font-size: 1.1em; font-weight: 600; }
+        .price { text-align: right; font-weight: bold; }
+        button { background: #E81828; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; float: right; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>⚾ Phillies Tracker: Sec 122-125</h1>
-            <button onclick="loadGames()">Refresh View</button>
-        </div>
-        <div id="game-list">Loading upcoming games...</div>
+        <h1>⚾ Phillies Dashboard <button onclick="loadData()">Refresh UI</button></h1>
+        <p id="status">Syncing with M3...</p>
+        <div id="game-list"></div>
     </div>
-
     <script>
-        function loadGames() {
+        function loadData() {
+            document.getElementById('status').innerText = "Fetching latest JSON...";
             fetch('games.json?t=' + Date.now())
                 .then(r => r.json())
-                .then(games => {
+                .then(data => {
                     const list = document.getElementById('game-list');
                     list.innerHTML = '';
-                    if (games.length === 0) { list.innerHTML = "No upcoming games parsed yet."; return; }
-                    
-                    games.forEach(game => {
-                        const div = document.createElement('div');
-                        div.className = 'game-card';
-                        div.innerHTML = `
-                            <div class="date-box">${game.weekday}<br>${game.date}</div>
-                            <div class="meta">${game.time}<br>@ Citizens Bank</div>
-                            <div class="opponent">vs. ${game.opponent}</div>
-                            <div class="prices">
-                                122: <span class="price-tag">$${game.p122 || '??'}</span><br>
-                                125: <span class="price-tag">$${game.p125 || '??'}</span>
-                            </div>
-                        `;
-                        list.appendChild(div);
+                    data.forEach(g => {
+                        list.innerHTML += `<div class="game-card">
+                            <div class="date">${g.weekday}<br>${g.date}</div>
+                            <div class="opponent">vs. ${g.opponent}</div>
+                            <div class="price">Sec 122: $${g.p122 || '??'}</div>
+                        </div>`;
                     });
+                    document.getElementById('status').innerText = "Updated via GitHub Pages";
                 });
         }
-        loadGames();
+        loadData();
     </script>
 </body>
 </html>
